@@ -1,0 +1,11 @@
+{
+  "name": "pochlib",
+  "version": "1.0.0",
+  "description": "sass du projet Poch'lib",
+  "main": "index.js",
+  "scripts": {
+    "sass": "sass --watch ./css/sass/main.scss:./css/public/style.css --style compressed"
+  },
+  "author": "RavizéAymeric",
+  "license": "ISC"
+}
