@@ -74,19 +74,19 @@ function hideBt(){
 }
 
 function requestGet(URL){
-
+/*
     console.log("start");
     if (window.fetch) {
-
-    fetch(URL).then(function (responce){
-        if (responce.ok) {
-            return responce.json();
+*/
+    return fetch(URL).then(function (response){
+        if (response.ok) {
+            return response.json();
         } else {
-            console.error("Ereur : "+ responce.status);
+            console.error("Ereur : "+ response.status);
         }
         
     });
-
+/*
     } else {
         return new Promise(function(resolve,reject){
             console.log("promise");
@@ -105,7 +105,7 @@ function requestGet(URL){
             xhr.open('GET',URL,true);
             xhr.send();
         })
-    }
+    }*/
 
 
 
@@ -130,79 +130,68 @@ function requestGet(URL){
 
 function displaybook(requestresult){
 
-    let divContent =document.getElementById("content");
+    
     // metre chaque element dans les balise html corespondente
+    //console.log(requestresult);
     
-    for(let i =0;i<requestresult.totalItems;i++){//1 a remplacer par le nombre d element a traiter
+    //for(let i =0;i<requestresult.totalItems;i++){//1 a remplacer par le nombre d element a traiter
         //console.log(requestresult.items[i].authors);
+        requestresult.items.map(item => {
+        console.log(item["volumeInfo"]);
+
         newItemcontainer = document.createElement("div");
         newItemcontainer.setAttribute("class", "enumbook");
 
+        newIcon = document.createElement("i");
+        newIcon.setAttribute("class", "fas fa-bookmark");
+
         newItemtitle = document.createElement("p");
         newItemtitle.setAttribute("class", "titlebook");
-        newItemtitle.setAttribute("value", requestresult.items[i].volumeInfo.title);
+        newItemtitle.innerHTML="Titre: " + item["volumeInfo"].title;
 
         newItemid = document.createElement("p");
         newItemid.setAttribute("class", "idbook");
-        newItemid.setAttribute("value", requestresult.items[i].id);
+        newItemid.innerHTML="ID: " +item.id;
 
         newItemauthor = document.createElement("p");
         newItemauthor.setAttribute("class", "authorbook");
-        newItemauthor.setAttribute("value", requestresult.items[i].volumeInfo.authors);// verif si cela affiche tt les auteur
+        newItemauthor.innerHTML="Auteur: " +item["volumeInfo"].authors;// verif si cela affiche tt les auteur
 
         newItemdescription = document.createElement("p");
         newItemdescription.setAttribute("class", "descriptionbook");
-        newItemdescription.setAttribute("value", requestresult.items[i].volumeInfo.description);
-
+        if(item["volumeInfo"].imageLinks != undefined){
+        newItemdescription.innerHTML="Description: " + item["volumeInfo"].description.substr(0,200);
+        }else{
+        newItemdescription.innerHTML="Description: Information manquante";
+       }
+/*
+        console.log(item["volumeInfo"].imageLinks != undefined);
+        console.log(item["volumeInfo"].imageLinks.smallThumbnail);
+*/
+        if(item["volumeInfo"].imageLinks != undefined){
         newItemimg = document.createElement("img");
         newItemimg.setAttribute("class", "imgbook");
-        newItemimg.setAttribute("src", requestresult.items[i].imageLinks.thumbnail);// penser a gerer les tail pour le responsive
+        newItemimg.setAttribute("src", item["volumeInfo"].imageLinks.smallThumbnail);// penser a gerer les tail pour le responsive
 
+        }else{// metre image dans lien
+        
+            newItemimg = document.createElement("img");
+            newItemimg.setAttribute("class", "imgbook");
+            newItemimg.setAttribute("src", "./img/unavailable.png"); 
+
+        }
+        
+        newItemcontainer.appendChild(newIcon);
         newItemcontainer.appendChild(newItemtitle);
         newItemcontainer.appendChild(newItemid);
         newItemcontainer.appendChild(newItemauthor);
         newItemcontainer.appendChild(newItemdescription);
         newItemcontainer.appendChild(newItemimg);
-
-        divContent.appendChild(newItemcontainer);
-    }
+//modif location
+        insertAfter(newItemcontainer,document.querySelector("hr"));
+        //document.getElementById("content").appendChild(newItemcontainer);
+    });
     
-    //c la mm chause
-   /* requestItems.items.map(items => {
-
-        newItemcontainer = document.createElement("div");
-        newItemcontainer.setAttribute("class", "enumbook");
-
-        newItemtitle = document.createElement("p");
-        newItemtitle.setAttribute("class", "titlebook");
-        newItemtitle.setAttribute("value", items.title);
-
-        newItemid = document.createElement("p");
-        newItemid.setAttribute("class", "idbook");
-        newItemid.setAttribute("value", items.id);
-
-        newItemauthor = document.createElement("p");
-        newItemauthor.setAttribute("class", "authorbook");
-        newItemauthor.setAttribute("value", items.authors);
-
-        newItemdescription = document.createElement("p");
-        newItemdescription.setAttribute("class", "descriptionbook");
-        newItemdescription.setAttribute("value", items.description);
-
-        newItemimg = document.createElement("img");
-        newItemimg.setAttribute("class", "imgbook");
-        newItemimg.setAttribute("src", items.imageLinks.thumbnail);// penser a gerer les tail pour le responsive
-
-        newItemcontainer.appendChild(newItemtitle);
-        newItemcontainer.appendChild(newItemid);
-        newItemcontainer.appendChild(newItemauthor);
-        newItemcontainer.appendChild(newItemdescription);
-        newItemcontainer.appendChild(newItemimg);
-
-        divContent.appendChild(newItemcontainer);
-
-
-    });*/
     // remplacer par des acolade + mon code de dans item.truc
     //requestItems.item.map(item => console.log(item));
     //console.log(typeof maVariable);
@@ -214,7 +203,7 @@ function searchBook(titre,auteur){
     URL=URL+"inauthor:"+auteur+"+"+"intitle:"+titre+"&key="+ApiK;
     //
     requestGet(URL).then((response) => 
-        displaybook(JSON.parse(response))
+        displaybook(response)
     ).catch((error) =>
         console.error(error)
     );
@@ -225,13 +214,18 @@ function searchBook(titre,auteur){
 
 function waitSearch(){
 
-    document.getElementById("form-search").addEventListener('click', function () {
+    document.getElementById("bt-search").addEventListener('click', function () {
         searchBook(document.getElementById("form-titre").value,document.getElementById("form-auteur").value);      
     });
 
 }
 
+function SaveBook(){
 
+}
+function Deletebook(){
+    
+}
 
 window.onload = function () {
     let SelectorBook = document.querySelector("#myBooks h2");
@@ -242,6 +236,8 @@ window.onload = function () {
     console.log("main");
     waitSearch();
 
+    SaveBook();
+    Deletebook();
    
 }
 
