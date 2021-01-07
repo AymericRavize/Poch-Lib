@@ -14,9 +14,7 @@ function htmlAddBook(SelectorBook){
 
 function htmlform(SelectorBook){
     // création du formulaire
-    const newform = document.createElement("form");
-    newform.setAttribute("method", "post");
-    newform.setAttribute("action", "ptraitement.php");
+    const newform = document.createElement("div");
     newform.setAttribute("id", "form-search");
     // champ titre
     const newlabeltitre = document.createElement("label");
@@ -36,8 +34,9 @@ function htmlform(SelectorBook){
     newinputauteur.setAttribute("id", "form-auteur");
     // bouton submit
     const newinputsubmit = document.createElement("input");
-    newinputsubmit.setAttribute("type", "submit");
+    newinputsubmit.setAttribute("type", "button");
     newinputsubmit.setAttribute("value", "Rechercher");
+    newinputsubmit.setAttribute("id", "bt-search");
     //ajout dans le DOM
     insertAfter(newform,SelectorBook);
     newform.appendChild(newlabeltitre);
@@ -214,11 +213,11 @@ function searchBook(titre,auteur){
     let URL="https://www.googleapis.com/books/v1/volumes?q=";
     URL=URL+"inauthor:"+auteur+"+"+"intitle:"+titre+"&key="+ApiK;
     //
-    requestGet(URL).then(function (response){
-        displaybook(JSON.parse(response));
-    }).catch(function (error){
-        console.error(error);
-    });
+    requestGet(URL).then((response) => 
+        displaybook(JSON.parse(response))
+    ).catch((error) =>
+        console.error(error)
+    );
     
 
 
