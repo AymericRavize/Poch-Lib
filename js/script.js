@@ -45,6 +45,10 @@ function htmlform(SelectorBook){
     newform.appendChild(newinputauteur);
     newform.appendChild(newinputsubmit);
     newform.style.display = 'none';
+    // crée la div qui acuellera le resulta
+    const newresult = document.createElement("div");
+    newresult.setAttribute("id", "result-search");
+    insertAfter(newresult,document.querySelector("hr"));
 
 }
 
@@ -68,7 +72,8 @@ function hideBt(){
     document.getElementById("bt-cancel-search").addEventListener('click', function () {
         document.getElementById("form-search").style.display = 'none';
         document.getElementById("bt-cancel-search").style.display = 'none';
-        document.getElementById("bt-add-book").style.display = 'inline-block';  
+        document.getElementById("bt-add-book").style.display = 'inline-block'; 
+        document.getElementById("result-search").empty(); 
     });
 
 }
@@ -128,7 +133,7 @@ function requestGet(URL){
 
 }
 
-function displaybook(requestresult){
+function displaybook(requestresult,typeAffichage){
 
     
     // metre chaque element dans les balise html corespondente
@@ -136,14 +141,31 @@ function displaybook(requestresult){
     
     //for(let i =0;i<requestresult.totalItems;i++){//1 a remplacer par le nombre d element a traiter
         //console.log(requestresult.items[i].authors);
+
+        container = document.createElement("div");
+        container.setAttribute("class", "enumbookList");
+
         requestresult.items.map(item => {
-        console.log(item["volumeInfo"]);
+        //console.log(item["volumeInfo"]);
 
         newItemcontainer = document.createElement("div");
         newItemcontainer.setAttribute("class", "enumbook");
 
-        newIcon = document.createElement("i");
-        newIcon.setAttribute("class", "fas fa-bookmark");
+        switch (typeAffichage) {
+            case "0":
+                newIcon = document.createElement("i");
+                newIcon.setAttribute("class", "fas fa-bookmark addB");
+                break;
+            case "1":
+                newIcon = document.createElement("i");
+                newIcon.setAttribute("class", "fas fa-trash delB");
+                break;
+        
+            default:
+                console.log("error affichage icon");
+                break;
+        }
+
 
         newItemtitle = document.createElement("p");
         newItemtitle.setAttribute("class", "titlebook");
@@ -188,10 +210,10 @@ function displaybook(requestresult){
         newItemcontainer.appendChild(newItemdescription);
         newItemcontainer.appendChild(newItemimg);
 //modif location
-        insertAfter(newItemcontainer,document.querySelector("hr"));
+        container.appendChild(newItemcontainer);
         //document.getElementById("content").appendChild(newItemcontainer);
     });
-    
+    return container;
     // remplacer par des acolade + mon code de dans item.truc
     //requestItems.item.map(item => console.log(item));
     //console.log(typeof maVariable);
@@ -202,9 +224,15 @@ function searchBook(titre,auteur){
     let URL="https://www.googleapis.com/books/v1/volumes?q=";
     URL=URL+"inauthor:"+auteur+"+"+"intitle:"+titre+"&key="+ApiK;
     //
-    requestGet(URL).then((response) => 
-        displaybook(response)
-    ).catch((error) =>
+    requestGet(URL).then((response) => {
+    document.getElementById("result-search").innerHTML="";
+    if (response.items === null) {
+        document.getElementById("result-search").createElement("p").innerHTML="Aucun résultat";
+    } else {
+        document.getElementById("result-search").appendChild(displaybook(response,"0"));
+        SaveBook();//si des element son crée
+    }
+    }).catch((error) =>
         console.error(error)
     );
     
@@ -219,13 +247,94 @@ function waitSearch(){
     });
 
 }
+function creatTabSave(){
+
+    if (sessionStorage.getItem("TabBookSave") === null) {//si le tableau existe
+        sessionStorage.setItem("TabBookSave",[]);
+        
+    } 
+}
+
+function ifSaveExite(idBook,tab){//regarde si id paser est deja presente
+
+    for (let i = 0; i < tab.length; i++) {
+        if (tab[i] === idBook) {
+            return true;
+        }
+        
+    }
+    return false;
+}
 
 function SaveBook(){
-
+    
+    document.querySelector(".addB").addEventListener('click', function () {
+           
+           let idSave = this.parentNode.querySelector(".idbook").textContent.substr(4);
+           let monItemSave = sessionStorage.getItem("TabBookSave");
+           console.log(monItemSave);
+           if (ifSaveExite(idSave,monItemSave)) {
+               alert("Item déja enregistrer");
+           } else {
+               monItemSave.push(idSave);
+               sessionStorage.setItem("TabBookSave", monSaveBook);
+               viewMyBook();
+           }
+        Deletebook();
+    });
+    
 }
 function Deletebook(){
     
+    document.querySelector(".delB").addEventListener('click', function () {
+           
+        let idDelete = this.parentNode.querySelector(".idbook").textContent.substr(4);
+        let monItemSave = sessionStorage.getItem("TabBookSave");
+
+        monItemSave = monItemSave.filter(item => item !== idDelete);
+        sessionStorage.setItem("TabBookSave", monSaveBook);
+        viewMyBook();
+        
+ });
+
 }
+
+function viewMyBook(){// fait l affichage de ce qui est dans le storage
+
+    console.log("livre view");
+    //faire un clear des element
+    document.getElementById("content").innerHTML="";
+    let montabextract =sessionStorage.getItem("TabBookSave");
+    if (montabextract) {//si le tableau existe
+
+       // let URL="https://www.googleapis.com/books/v1/volumes/"+montabextract[0];
+
+        for(let i =1;i<montabextract.length;i++){
+            URL=URL+montabextract[i]+"&key="+ApiK;// savoir commen recupere les livre d une liste d id
+            requestGet(URL).then((response) => 
+            document.getElementById("content").appendChild(displaybook(response,"1"))
+            ).catch((error) =>
+             console.error(error)
+            );
+        }
+
+    
+    
+    //metre une variable vrai ou fau dans le display book pour afficher les icon en fonction un case c mieu pour les evol
+    
+
+    
+} 
+   /* newIcon = document.createElement("i");
+    newIcon.setAttribute("class", "fas fa-trash addB");*/
+
+
+//modif location
+
+
+
+}
+
 
 window.onload = function () {
     let SelectorBook = document.querySelector("#myBooks h2");
@@ -233,11 +342,13 @@ window.onload = function () {
     htmlCancelSearchBt(SelectorBook);
     htmlform(SelectorBook);
     hideBt();
+    creatTabSave();
+    viewMyBook();
     console.log("main");
     waitSearch();
 
-    SaveBook();
-    Deletebook();
+    
+    
    
 }
 
