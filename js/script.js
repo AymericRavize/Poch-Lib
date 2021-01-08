@@ -230,7 +230,7 @@ function searchBook(titre,auteur){
         document.getElementById("result-search").createElement("p").innerHTML="Aucun résultat";
     } else {
         document.getElementById("result-search").appendChild(displaybook(response,"0"));
-        SaveBook();//si des element son crée
+        addEventSaveBook();//si des element son crée
     }
     }).catch((error) =>
         console.error(error)
@@ -246,16 +246,17 @@ function waitSearch(){
         searchBook(document.getElementById("form-titre").value,document.getElementById("form-auteur").value);      
     });
 
-}
+}/*
 function creatTabSave(){
+    console.log(sessionStorage.getItem("TabBookSave") === null || sessionStorage.getItem("TabBookSave") === "");
+    if (sessionStorage.getItem("TabBookSave") === null || sessionStorage.getItem("TabBookSave") === "") {//si le tableau existe
 
-    if (sessionStorage.getItem("TabBookSave") === null) {//si le tableau existe
-        sessionStorage.setItem("TabBookSave",[]);
-        
+    sessionStorage.setItem("TabBookSave","");
+    //JSON.stringify("") reconvertir et voir a l enregistrement    et gerer un tableau
     } 
-}
+}*/
 
-function ifSaveExite(idBook,tab){//regarde si id paser est deja presente
+function BookExite(idBook,tab){//regarde si id paser est deja presente
 
     for (let i = 0; i < tab.length; i++) {
         if (tab[i] === idBook) {
@@ -265,34 +266,45 @@ function ifSaveExite(idBook,tab){//regarde si id paser est deja presente
     }
     return false;
 }
+function getBooks() {
+    return JSON.parse(sessionStorage.getItem("TabBooksSave"));
+}
+function setBooks(monSaveBook){
+    sessionStorage.setItem("TabBookSave", JSON.stringify(monSaveBook));
+}
 
-function SaveBook(){
+function addEventSaveBook(){
     
     document.querySelector(".addB").addEventListener('click', function () {
            
            let idSave = this.parentNode.querySelector(".idbook").textContent.substr(4);
-           let monItemSave = sessionStorage.getItem("TabBookSave");
-           console.log(monItemSave);
-           if (ifSaveExite(idSave,monItemSave)) {
-               alert("Item déja enregistrer");
-           } else {
-               monItemSave.push(idSave);
-               sessionStorage.setItem("TabBookSave", monSaveBook);
-               viewMyBook();
+           let monSaveBook = getBooks();//afinir
+           console.log(monSaveBook);
+           if (monSaveBook !== "") {
+                if (BookExite(idSave,monSaveBook)) {
+                    alert("Item déja enregistrer");
+                }else {
+                    monItemSave.push(idSave);
+                    setBooks(monSaveBook);
+                    viewMyBook();
+                }
+           }else{
+            setBooks([idSave]);
            }
-        Deletebook();
+           
+           addEventDeletebook();
     });
     
 }
-function Deletebook(){
+function addEventDeletebook(){
     
     document.querySelector(".delB").addEventListener('click', function () {
            
         let idDelete = this.parentNode.querySelector(".idbook").textContent.substr(4);
-        let monItemSave = sessionStorage.getItem("TabBookSave");
+        let monSaveBook = getBooks();
 
-        monItemSave = monItemSave.filter(item => item !== idDelete);
-        sessionStorage.setItem("TabBookSave", monSaveBook);
+        monSaveBook = monSaveBook.filter(item => item !== idDelete);
+        setBooks(monSaveBook);
         viewMyBook();
         
  });
@@ -304,13 +316,13 @@ function viewMyBook(){// fait l affichage de ce qui est dans le storage
     console.log("livre view");
     //faire un clear des element
     document.getElementById("content").innerHTML="";
-    let montabextract =sessionStorage.getItem("TabBookSave");
-    if (montabextract) {//si le tableau existe
+    let monSaveBook =getBooks();
+    if (monSaveBook !== "") {//si le tableau existe
 
        // let URL="https://www.googleapis.com/books/v1/volumes/"+montabextract[0];
 
-        for(let i =1;i<montabextract.length;i++){
-            URL=URL+montabextract[i]+"&key="+ApiK;// savoir commen recupere les livre d une liste d id
+        for(let i =0;i<monSaveBook.length;i++){
+            URL=URL+monSaveBook[i]+"&key="+ApiK;// savoir commen recupere les livre d une liste d id
             requestGet(URL).then((response) => 
             document.getElementById("content").appendChild(displaybook(response,"1"))
             ).catch((error) =>
@@ -342,7 +354,7 @@ window.onload = function () {
     htmlCancelSearchBt(SelectorBook);
     htmlform(SelectorBook);
     hideBt();
-    creatTabSave();
+    //creatTabSave();
     viewMyBook();
     console.log("main");
     waitSearch();
