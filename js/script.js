@@ -86,6 +86,7 @@ function requestGet(URL){
     return fetch(URL).then(function (response){
         if (response.ok) {
             return response.json();
+            
         } else {
             console.error("Ereur : "+ response.status);
         }
@@ -138,15 +139,22 @@ function displaybook(requestresult,typeAffichage){
     
     // metre chaque element dans les balise html corespondente
     //console.log(requestresult);
-    
+    container = document.createElement("div");
+    container.setAttribute("class", "enumbookList");
     //for(let i =0;i<requestresult.totalItems;i++){//1 a remplacer par le nombre d element a traiter
         //console.log(requestresult.items[i].authors);
         console.log(requestresult.items);
         console.log("qsfsffqf");
+    if (requestresult.items === undefined) {
+        newItemNotFound = document.createElement("p");
+        newItemNotFound.setAttribute("class", "idNotFound");
+        newItemNotFound.innerHTML="Aucun livre n’a été trouvé";
+        container.appendChild(newItemNotFound);
+    }else {
+    
 
 
-        container = document.createElement("div");
-        container.setAttribute("class", "enumbookList");
+        
 console.log(requestresult.items);
         requestresult.items.map(item => {
         //console.log(item["volumeInfo"]);
@@ -218,7 +226,7 @@ console.log(requestresult.items);
         console.log(newItemcontainer);
         //document.getElementById("content").appendChild(newItemcontainer);
     });
-
+}
     return container;
     // remplacer par des acolade + mon code de dans item.truc
     //requestItems.item.map(item => console.log(item));
@@ -281,7 +289,7 @@ function setBooks(monSaveBook){
 
 function addEventSaveBook(){
     
-    var classStrok = document.querySelectorAll(".addB");
+    let classStrok = document.querySelectorAll(".addB");
              
             Array.from(classStrok).forEach(element => {
             element.addEventListener('click', function () {
@@ -299,8 +307,7 @@ function addEventSaveBook(){
                 }else{
                     setBooks([idSave]);
                 }
-                viewMyBook()
-                //addEventDeletebook();  
+                viewMyBook()                 
                 });
             });
            
@@ -308,7 +315,7 @@ function addEventSaveBook(){
 }
 function addEventDeletebook(){
     
-    document.querySelector(".delB").addEventListener('click', function () {
+   /* document.querySelector(".delB").addEventListener('click', function () {
            
         let idDelete = this.parentNode.querySelector(".idbook").textContent.substr(4);
         let monSaveBook = getBooks();
@@ -317,16 +324,31 @@ function addEventDeletebook(){
         setBooks(monSaveBook);
         viewMyBook();
         
- });
+ });*/
+//
+    let classStrok = document.querySelectorAll(".delB");
+             
+    Array.from(classStrok).forEach(element => {
+            element.addEventListener('click', function () {
 
+                let idDelete = this.parentNode.querySelector(".idbook").textContent.substr(4);
+                let monSaveBook = getBooks();
+
+                monSaveBook = monSaveBook.filter(item => item !== idDelete);
+                setBooks(monSaveBook);
+                viewMyBook();
+            });
+    });
 }
 function TabPromesse(URL,monSaveBook){
     let listebooks=[];
+
     for(let i =0;i<monSaveBook.length;i++){
         console.log("viewMyBook2");
-        URL=URL+monSaveBook[i]+"?key="+ApiK;// savoir commen recupere les livre d une liste d id
-        listebooks.push(requestGet(URL));        
+        listebooks.push(requestGet(URL+monSaveBook[i]+"?key="+ApiK));        
     }
+    console.log("listebooks");
+    console.log(listebooks);
     return listebooks;
 
 }
@@ -342,7 +364,8 @@ function viewMyBook(){// fait l affichage de ce qui est dans le storage
         console.log("viewMyBook1");
         Promise.all(TabPromesse(URL,monSaveBook)).then((tabpromise) =>{
             console.log(tabpromise);
-            document.getElementById("content").appendChild(displaybook({items: tabpromise},"1"));           
+            document.getElementById("content").appendChild(displaybook({items: tabpromise},"1")); 
+            addEventDeletebook();          
         }).catch((error) =>
         console.error(error)
        );//verif les doner envoyer
@@ -358,7 +381,7 @@ function viewMyBook(){// fait l affichage de ce qui est dans le storage
        // 
 
     
-    
+       
     //metre une variable vrai ou fau dans le display book pour afficher les icon en fonction un case c mieu pour les evol
     
 
