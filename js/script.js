@@ -73,7 +73,7 @@ function hideBt(){
         document.getElementById("form-search").style.display = 'none';
         document.getElementById("bt-cancel-search").style.display = 'none';
         document.getElementById("bt-add-book").style.display = 'inline-block'; 
-        document.getElementById("result-search").empty(); 
+        document.getElementById("result-search").innerHTML="";
     });
 
 }
@@ -141,13 +141,16 @@ function displaybook(requestresult,typeAffichage){
     
     //for(let i =0;i<requestresult.totalItems;i++){//1 a remplacer par le nombre d element a traiter
         //console.log(requestresult.items[i].authors);
+        console.log(requestresult.items);
+        console.log("qsfsffqf");
+
 
         container = document.createElement("div");
         container.setAttribute("class", "enumbookList");
-
+console.log(requestresult.items);
         requestresult.items.map(item => {
         //console.log(item["volumeInfo"]);
-
+        console.log("newItemcontainer");
         newItemcontainer = document.createElement("div");
         newItemcontainer.setAttribute("class", "enumbook");
 
@@ -169,7 +172,8 @@ function displaybook(requestresult,typeAffichage){
 
         newItemtitle = document.createElement("p");
         newItemtitle.setAttribute("class", "titlebook");
-        newItemtitle.innerHTML="Titre: " + item["volumeInfo"].title;
+        console.log(item);
+        newItemtitle.innerHTML="Titre: "  + item.volumeInfo && item.volumeInfo.title ? item.volumeInfo.title : '';
 
         newItemid = document.createElement("p");
         newItemid.setAttribute("class", "idbook");
@@ -211,8 +215,10 @@ function displaybook(requestresult,typeAffichage){
         newItemcontainer.appendChild(newItemimg);
 //modif location
         container.appendChild(newItemcontainer);
+        console.log(newItemcontainer);
         //document.getElementById("content").appendChild(newItemcontainer);
     });
+
     return container;
     // remplacer par des acolade + mon code de dans item.truc
     //requestItems.item.map(item => console.log(item));
@@ -223,7 +229,7 @@ function searchBook(titre,auteur){
     console.log("recherche");
     let URL="https://www.googleapis.com/books/v1/volumes?q=";
     URL=URL+"inauthor:"+auteur+"+"+"intitle:"+titre+"&key="+ApiK;
-    //
+    //metre une securiter si on trouve aps de livre
     requestGet(URL).then((response) => {
     document.getElementById("result-search").innerHTML="";
     if (response.items === null) {
@@ -246,10 +252,10 @@ function waitSearch(){
         searchBook(document.getElementById("form-titre").value,document.getElementById("form-auteur").value);      
     });
 
-}/*
-function creatTabSave(){
+}
+/*function initBooks(){
     console.log(sessionStorage.getItem("TabBookSave") === null || sessionStorage.getItem("TabBookSave") === "");
-    if (sessionStorage.getItem("TabBookSave") === null || sessionStorage.getItem("TabBookSave") === "") {//si le tableau existe
+    if (sessionStorage.getItem("TabBookSave") === null ) {//si le tableau existe
 
     sessionStorage.setItem("TabBookSave","");
     //JSON.stringify("") reconvertir et voir a l enregistrement    et gerer un tableau
@@ -270,30 +276,34 @@ function getBooks() {
     return JSON.parse(sessionStorage.getItem("TabBooksSave"));
 }
 function setBooks(monSaveBook){
-    sessionStorage.setItem("TabBookSave", JSON.stringify(monSaveBook));
+    sessionStorage.setItem("TabBooksSave", JSON.stringify(monSaveBook));
 }
 
 function addEventSaveBook(){
     
-    document.querySelector(".addB").addEventListener('click', function () {
-           
-           let idSave = this.parentNode.querySelector(".idbook").textContent.substr(4);
-           let monSaveBook = getBooks();//afinir
-           console.log(monSaveBook);
-           if (monSaveBook !== "") {
-                if (BookExite(idSave,monSaveBook)) {
-                    alert("Item déja enregistrer");
-                }else {
-                    monItemSave.push(idSave);
-                    setBooks(monSaveBook);
-                    viewMyBook();
+    var classStrok = document.querySelectorAll(".addB");
+             
+            Array.from(classStrok).forEach(element => {
+            element.addEventListener('click', function () {
+                let idSave = this.parentNode.querySelector(".idbook").textContent.substr(4);
+                console.log(idSave);
+                let monSaveBook = getBooks();//afinir
+                console.log(monSaveBook);
+                if (monSaveBook !== "" && monSaveBook !== null) {
+                        if (BookExite(idSave,monSaveBook)) {
+                            alert("Item déja enregistrer");
+                        }else {
+                            monSaveBook.push(idSave);
+                            setBooks(monSaveBook);
+                        }
+                }else{
+                    setBooks([idSave]);
                 }
-           }else{
-            setBooks([idSave]);
-           }
+                viewMyBook()
+                //addEventDeletebook();  
+                });
+            });
            
-           addEventDeletebook();
-    });
     
 }
 function addEventDeletebook(){
@@ -310,25 +320,42 @@ function addEventDeletebook(){
  });
 
 }
+function TabPromesse(URL,monSaveBook){
+    let listebooks=[];
+    for(let i =0;i<monSaveBook.length;i++){
+        console.log("viewMyBook2");
+        URL=URL+monSaveBook[i]+"?key="+ApiK;// savoir commen recupere les livre d une liste d id
+        listebooks.push(requestGet(URL));        
+    }
+    return listebooks;
 
+}
 function viewMyBook(){// fait l affichage de ce qui est dans le storage
 
     console.log("livre view");
     //faire un clear des element
     document.getElementById("content").innerHTML="";
     let monSaveBook =getBooks();
-    if (monSaveBook !== "") {//si le tableau existe
-
-       // let URL="https://www.googleapis.com/books/v1/volumes/"+montabextract[0];
-
-        for(let i =0;i<monSaveBook.length;i++){
-            URL=URL+monSaveBook[i]+"&key="+ApiK;// savoir commen recupere les livre d une liste d id
-            requestGet(URL).then((response) => 
-            document.getElementById("content").appendChild(displaybook(response,"1"))
-            ).catch((error) =>
-             console.error(error)
-            );
-        }
+    console.log(monSaveBook);
+    if (monSaveBook !== "" && monSaveBook !== null ) {//si le tableau existe       
+        let URL="https://www.googleapis.com/books/v1/volumes/";       
+        console.log("viewMyBook1");
+        Promise.all(TabPromesse(URL,monSaveBook)).then((tabpromise) =>{
+            console.log(tabpromise);
+            document.getElementById("content").appendChild(displaybook({items: tabpromise},"1"));           
+        }).catch((error) =>
+        console.error(error)
+       );//verif les doner envoyer
+        /*
+        if (i = (monSaveBook.length-1)) {
+                document.getElementById("content").appendChild(displaybook({items: listebooks},"1"));//voire pour modif l affichage en  2fonction
+            }
+        */ 
+        /*console.log(listebooks[0])
+        console.log({items: listebooks});
+        console.log("montest");*/
+       // document.getElementById("content").appendChild(displaybook({items: listebooks},"1"));//voir comment demander dattendre aven de faire la demande affiche
+       // 
 
     
     
@@ -354,7 +381,7 @@ window.onload = function () {
     htmlCancelSearchBt(SelectorBook);
     htmlform(SelectorBook);
     hideBt();
-    //creatTabSave();
+    //initBooks();
     viewMyBook();
     console.log("main");
     waitSearch();
