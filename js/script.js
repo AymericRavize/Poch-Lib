@@ -8,6 +8,7 @@ function htmlAddBook(SelectorBook){
     const newBtAddBook = document.createElement("input");
     newBtAddBook.setAttribute("type", "button");
     newBtAddBook.setAttribute("value", "Ajouter un livre");
+    newBtAddBook.setAttribute("class", "button");
     newBtAddBook.setAttribute("id", "bt-add-book");  
     insertAfter(newBtAddBook,SelectorBook);
 }
@@ -36,6 +37,7 @@ function htmlform(SelectorBook){
     const newinputsubmit = document.createElement("input");
     newinputsubmit.setAttribute("type", "button");
     newinputsubmit.setAttribute("value", "Rechercher");
+    newinputsubmit.setAttribute("class", "button");
     newinputsubmit.setAttribute("id", "bt-search");
     //ajout dans le DOM
     insertAfter(newform,SelectorBook);
@@ -57,6 +59,7 @@ function htmlCancelSearchBt(SelectorBook){
     const newBtCancelSearch = document.createElement("input");
     newBtCancelSearch.setAttribute("type", "button");
     newBtCancelSearch.setAttribute("value", "Annuler");
+    newBtCancelSearch.setAttribute("class", "button");
     newBtCancelSearch.setAttribute("id", "bt-cancel-search");  
     insertAfter(newBtCancelSearch,SelectorBook);
     newBtCancelSearch.style.display = 'none';
