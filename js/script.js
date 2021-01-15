@@ -48,7 +48,7 @@ function htmlform(SelectorBook){
     // crée la div qui acuellera le resulta
     const newresult = document.createElement("div");
     newresult.setAttribute("id", "result-search");
-    insertAfter(newresult,document.querySelector("hr"));
+    document.getElementById("myBooks").insertBefore(newresult,document.querySelector("hr"));
 
 }
 
@@ -243,7 +243,8 @@ function searchBook(titre,auteur){
     if (response.items === null) {
         document.getElementById("result-search").createElement("p").innerHTML="Aucun résultat";
     } else {
-        document.getElementById("result-search").appendChild(displaybook(response,"0"));
+        document.getElementById("result-search").appendChild(displaybook(response,"0"));      
+       //insertAfter(displaybook(response,"0"), document.getElementById("bt-add-book"));
         addEventSaveBook();//si des element son crée
     }
     }).catch((error) =>
@@ -257,7 +258,14 @@ function searchBook(titre,auteur){
 function waitSearch(){
 
     document.getElementById("bt-search").addEventListener('click', function () {
-        searchBook(document.getElementById("form-titre").value,document.getElementById("form-auteur").value);      
+        let title = document.getElementById("form-titre").value;
+        let autor = document.getElementById("form-auteur").value;
+        if (title !== "" && autor !== "" && title !== null && autor !== null ) {
+            console.log("trucmuche");
+            searchBook(document.getElementById("form-titre").value,document.getElementById("form-auteur").value);
+        }else{
+            alert("Tous les champs ne sont pas remplis !");
+        }              
     });
 
 }
@@ -269,7 +277,7 @@ function waitSearch(){
     //JSON.stringify("") reconvertir et voir a l enregistrement    et gerer un tableau
     } 
 }*/
-
+/*
 function BookExite(idBook,tab){//regarde si id paser est deja presente
 
     for (let i = 0; i < tab.length; i++) {
@@ -279,7 +287,7 @@ function BookExite(idBook,tab){//regarde si id paser est deja presente
         
     }
     return false;
-}
+}*/
 function getBooks() {
     return JSON.parse(sessionStorage.getItem("TabBooksSave"));
 }
@@ -298,7 +306,7 @@ function addEventSaveBook(){
                 let monSaveBook = getBooks();//afinir
                 console.log(monSaveBook);
                 if (monSaveBook !== "" && monSaveBook !== null) {
-                        if (BookExite(idSave,monSaveBook)) {
+                        if (monSaveBook.some((elem => elem === idSave))) {
                             alert("Item déja enregistrer");
                         }else {
                             monSaveBook.push(idSave);
@@ -356,7 +364,7 @@ function viewMyBook(){// fait l affichage de ce qui est dans le storage
 
     console.log("livre view");
     //faire un clear des element
-    document.getElementById("content").innerHTML="";
+    document.getElementById("content").innerHTML="<h2>Ma poch'liste</h2>";
     let monSaveBook =getBooks();
     console.log(monSaveBook);
     if (monSaveBook !== "" && monSaveBook !== null ) {//si le tableau existe       
