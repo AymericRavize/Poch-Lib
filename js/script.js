@@ -99,9 +99,7 @@ function requestGet(URL){
 
 }
 //fonction d'affichage des liste de livre prend en parametre une liste de livre et un type d affichage en fonction si celui ci est une recher ou une liste d enregistrement
-function displaybook(requestresult,typeAffichage){
-
-    
+function displaybook(requestresult,typeAffichage){ 
 
     container = document.createElement("div");
     container.setAttribute("class", "enumbookList");
@@ -110,11 +108,7 @@ function displaybook(requestresult,typeAffichage){
         newItemNotFound.setAttribute("class", "idNotFound");
         newItemNotFound.innerHTML="Aucun livre n’a été trouvé";
         container.appendChild(newItemNotFound);
-    }else {
-    
-
-
-        
+    }else {      
 
         requestresult.items.map(item => {// pacour de la liste de livre
         newItemcontainer = document.createElement("div");
@@ -201,8 +195,6 @@ function searchBook(titre,auteur){
     }).catch((error) =>
         console.error(error)
     );
-    
-
 
 }
 //fonction declanchan la recherche des livre si apuit sur le bouton corespondent
@@ -249,8 +241,6 @@ function addEventSaveBook(){
                 viewMyBook()                 
                 });
             });
-           
-    
 }
 // fontion ajouten un listeneur a chaque icon de supresion
 function addEventDeletebook(){
@@ -271,17 +261,18 @@ function addEventDeletebook(){
 }
 //fontion qui demande une requete pour chaque id stoker dans un tableau paser en parametre et le debut de l url de la requete
 function TabPromesse(URL,monSaveBook){
+    
     let listebooks=[];
 
     for(let i =0;i<monSaveBook.length;i++){
         listebooks.push(requestGet(URL+monSaveBook[i]+"?key="+ApiK));        
     }
+
     return listebooks;
 
 }
 //fontion qui affiche les livre
 function viewMyBook(){
-
 
     document.getElementById("content").innerHTML="<h2>Ma poch'liste</h2>";
     let monSaveBook =getBooks();
@@ -293,8 +284,7 @@ function viewMyBook(){
             addEventDeletebook();          
         }).catch((error) =>
         console.error(error)
-       );
-    
+       );   
 } 
   
 
@@ -303,6 +293,7 @@ function viewMyBook(){
 
 // fontion qui se lance une foi que la page est charger pour inisialiser tout les fontion js et listeneur
 window.onload = function () {
+
     let SelectorBook = document.querySelector("#myBooks h2");
     htmlAddBook(SelectorBook);
     htmlCancelSearchBt(SelectorBook);
