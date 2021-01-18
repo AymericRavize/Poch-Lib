@@ -3,20 +3,7 @@
     #bt-cancel-search,#bt-search{
         width: 150px;
     }
-    .enumbookList
-    {
-        flex-direction: row; 
-        
-        .enumbook{
-            width: 40%;
-        }
-    }
-    p{
-        font-size: 2vw;
-    }
-
 }
-
 @media (min-width: 1024px) {
     #bt-cancel-search,#bt-search{
         width: 200px;

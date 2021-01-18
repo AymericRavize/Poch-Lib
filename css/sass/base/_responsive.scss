@@ -1,0 +1,16 @@
+@media (min-width: 640px) {
+
+    .enumbookList
+    {
+        flex-direction: row; 
+        
+        .enumbook{
+            width: 40%;
+        }
+    }
+    p{
+        font-size: 0.5rem;
+    }
+
+}
+

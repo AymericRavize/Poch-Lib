@@ -250,6 +250,7 @@ function searchBook(titre,auteur){
     if (response.items === null) {
         document.getElementById("result-search").createElement("p").innerHTML="Aucun résultat";
     } else {
+        document.getElementById("result-search").innerHTML="<hr><h2>Résultat de recherche</h2>"
         document.getElementById("result-search").appendChild(displaybook(response,"0"));      
        //insertAfter(displaybook(response,"0"), document.getElementById("bt-add-book"));
         addEventSaveBook();//si des element son crée
