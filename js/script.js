@@ -145,7 +145,7 @@ function displaybook(requestResult, typeAffichage) {
             newItemDescription = document.createElement("p");
             newItemDescription.setAttribute("class", "descriptionbook");
             // vérification de l'existence d'une description
-            if (item["volumeInfo"].imageLinks != undefined) {
+            if (item["volumeInfo"].description != undefined) {
                 newItemDescription.innerHTML = "Description: " + item["volumeInfo"].description.substr(0, 200);
             } else {
                 newItemDescription.innerHTML = "Description: Information manquante";
