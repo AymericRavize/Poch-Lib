@@ -1,8 +1,10 @@
+//Clef de  l'Api
 const ApiK ="AIzaSyA8RaWOM9HDXS0n2e6LOSLM6c6fBgmdM1w";
+//fonction qui permet de metre un element apre un autre 
 function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
-
+//crée et place place le bouton pour ajouter un livre (dans une div pour permetre dapliquer le css)
 function htmlAddBook(SelectorBook){
     const newDiv = document.createElement("div");
     newDiv.setAttribute("class", "center");
@@ -55,7 +57,7 @@ function htmlform(SelectorBook){
     document.getElementById("myBooks").insertBefore(newresult,document.querySelector("hr"));
 
 }
-
+//crée le bouton d anulation et le rend invisible 
 function htmlCancelSearchBt(SelectorBook){
     
     const newBtCancelSearch = document.createElement("input");
@@ -66,7 +68,7 @@ function htmlCancelSearchBt(SelectorBook){
     insertAfter(newBtCancelSearch,SelectorBook);
     newBtCancelSearch.style.display = 'none';
 }
-
+//cette fontion crée deux listeneur sur l'apuit des boutons pour masquer et afficher le contenu de la page en fonction de l action utilisateur
 function hideBt(){
 
     document.getElementById("bt-add-book").addEventListener('click', function () {
@@ -82,75 +84,28 @@ function hideBt(){
     });
 
 }
-
+// fait une requete a partir  d'une url et retourne une reponce
 function requestGet(URL){
-/*
-    console.log("start");
-    if (window.fetch) {
-*/
+
     return fetch(URL).then(function (response){
         if (response.ok) {
             return response.json();
             
         } else {
-            console.error("Ereur : "+ response.status);
+            console.error("Ereur : "+ response.status);//retour l ereur si il y a
         }
         
     });
-/*
-    } else {
-        return new Promise(function(resolve,reject){
-            console.log("promise");
-            let xhr = new window.XMLHttpRequest();
-            xhr.onreadystatechange = function(){
-                console.log("rdy");
-                if(xhr.readyState === 4){
-                    if (xhr.status === 200) {
-                        console.log("saplante");
-                        resolve(xhr.responseText);
-                    } else {
-                        reject(xhr);
-                    }
-                }
-            }
-            xhr.open('GET',URL,true);
-            xhr.send();
-        })
-    }*/
-
-
-
-    
-
-/*
-    let requestapigooglebook = new XMLHttpRequest(); 
-    requestapigooglebook.open('GET', URL);
-    //Si la demande aboutit, le serveur répond avec un 200 OKcode d'état HTTP et les résultats du volume:
-    requestapigooglebook.onreadystatechange = function() {
-        if (requestapigooglebook.readyState === 4) { //"200 OKcode"
-            let requestresult = JSON.parse(requestapigooglebook.responseText);
-            displaybook(requestresult);
-           //faire le traitement
-           
-        }
-    };
-    requestapigooglebook.send();
-*/
 
 }
-
+//fonction d'affichage des liste de livre prend en parametre une liste de livre et un type d affichage en fonction si celui ci est une recher ou une liste d enregistrement
 function displaybook(requestresult,typeAffichage){
 
     
-    // metre chaque element dans les balise html corespondente
-    //console.log(requestresult);
+
     container = document.createElement("div");
     container.setAttribute("class", "enumbookList");
-    //for(let i =0;i<requestresult.totalItems;i++){//1 a remplacer par le nombre d element a traiter
-        //console.log(requestresult.items[i].authors);
-        console.log(requestresult.items);
-        console.log("qsfsffqf");
-    if (requestresult.items === undefined) {
+    if (requestresult.items === undefined) {//si aucun livre on inser celeument l information
         newItemNotFound = document.createElement("p");
         newItemNotFound.setAttribute("class", "idNotFound");
         newItemNotFound.innerHTML="Aucun livre n’a été trouvé";
@@ -160,13 +115,11 @@ function displaybook(requestresult,typeAffichage){
 
 
         
-console.log(requestresult.items);
-        requestresult.items.map(item => {
-        //console.log(item["volumeInfo"]);
-        console.log("newItemcontainer");
+
+        requestresult.items.map(item => {// pacour de la liste de livre
         newItemcontainer = document.createElement("div");
         newItemcontainer.setAttribute("class", "enumbook");
-
+        // creation la balise dajou ou supresion du livre en fonction du type
         switch (typeAffichage) {
             case "0":
                 newIcon = document.createElement("i");
@@ -182,10 +135,9 @@ console.log(requestresult.items);
                 break;
         }
 
-
+        //creation des diver balise et ajou des contenu associer
         newItemtitle = document.createElement("p");
         newItemtitle.setAttribute("class", "titlebook");
-        console.log(item);
         newItemtitle.innerHTML="Titre: "  + item.volumeInfo && item.volumeInfo.title ? item.volumeInfo.title : '';
 
         newItemid = document.createElement("p");
@@ -194,57 +146,49 @@ console.log(requestresult.items);
 
         newItemauthor = document.createElement("p");
         newItemauthor.setAttribute("class", "authorbook");
-        newItemauthor.innerHTML="Auteur: " +item["volumeInfo"].authors;// verif si cela affiche tt les auteur
+        newItemauthor.innerHTML="Auteur: " +item["volumeInfo"].authors;
 
         newItemdescription = document.createElement("p");
         newItemdescription.setAttribute("class", "descriptionbook");
+        // verification de l existance d'une description
         if(item["volumeInfo"].imageLinks != undefined){
         newItemdescription.innerHTML="Description: " + item["volumeInfo"].description.substr(0,200);
         }else{
         newItemdescription.innerHTML="Description: Information manquante";
        }
-/*
-        console.log(item["volumeInfo"].imageLinks != undefined);
-        console.log(item["volumeInfo"].imageLinks.smallThumbnail);
-*/
+       // verification de l existance d'une image 
         if(item["volumeInfo"].imageLinks != undefined){
         newItemimg = document.createElement("img");
         newItemimg.setAttribute("class", "imgbook");
         newItemimg.setAttribute("src", item["volumeInfo"].imageLinks.smallThumbnail);// penser a gerer les tail pour le responsive
 
-        }else{// metre image dans lien
+        }else{
         
             newItemimg = document.createElement("img");
             newItemimg.setAttribute("class", "imgbook");
             newItemimg.setAttribute("src", "./img/unavailable.png"); 
            
         }
-        let newDivimg = document.createElement("div");
+        let newDivimg = document.createElement("div");//ajout d une div pour centrer l image
         newDivimg.appendChild(newItemimg);
-
+// association des balise a un contenaire principal
         newItemcontainer.appendChild(newIcon);
         newItemcontainer.appendChild(newItemtitle);
         newItemcontainer.appendChild(newItemid);
         newItemcontainer.appendChild(newItemauthor);
         newItemcontainer.appendChild(newItemdescription);
         newItemcontainer.appendChild(newDivimg);
-//modif location
+
         container.appendChild(newItemcontainer);
-        console.log(newItemcontainer);
-        //document.getElementById("content").appendChild(newItemcontainer);
     });
 }
-    return container;
-    // remplacer par des acolade + mon code de dans item.truc
-    //requestItems.item.map(item => console.log(item));
-    //console.log(typeof maVariable);
+    return container; //envoi du conteneur
 } 
+//fonction de recherche de livre
 function searchBook(titre,auteur){
-    //penser a netoyer l affichage precedent
-    console.log("recherche");
+
     let URL="https://www.googleapis.com/books/v1/volumes?q=";
     URL=URL+"inauthor:"+auteur+"+"+"intitle:"+titre+"&key="+ApiK;
-    //metre une securiter si on trouve aps de livre
     requestGet(URL).then((response) => {
     document.getElementById("result-search").innerHTML="";
     if (response.items === null) {
@@ -252,8 +196,7 @@ function searchBook(titre,auteur){
     } else {
         document.getElementById("result-search").innerHTML="<hr><h2>Résultat de recherche</h2>"
         document.getElementById("result-search").appendChild(displaybook(response,"0"));      
-       //insertAfter(displaybook(response,"0"), document.getElementById("bt-add-book"));
-        addEventSaveBook();//si des element son crée
+        addEventSaveBook();
     }
     }).catch((error) =>
         console.error(error)
@@ -262,14 +205,13 @@ function searchBook(titre,auteur){
 
 
 }
-
+//fonction declanchan la recherche des livre si apuit sur le bouton corespondent
 function waitSearch(){
 
     document.getElementById("bt-search").addEventListener('click', function () {
         let title = document.getElementById("form-titre").value;
         let autor = document.getElementById("form-auteur").value;
         if (title !== "" && autor !== "" && title !== null && autor !== null ) {
-            console.log("trucmuche");
             searchBook(document.getElementById("form-titre").value,document.getElementById("form-auteur").value);
         }else{
             alert("Tous les champs ne sont pas remplis !");
@@ -277,32 +219,15 @@ function waitSearch(){
     });
 
 }
-/*function initBooks(){
-    console.log(sessionStorage.getItem("TabBookSave") === null || sessionStorage.getItem("TabBookSave") === "");
-    if (sessionStorage.getItem("TabBookSave") === null ) {//si le tableau existe
-
-    sessionStorage.setItem("TabBookSave","");
-    //JSON.stringify("") reconvertir et voir a l enregistrement    et gerer un tableau
-    } 
-}*/
-/*
-function BookExite(idBook,tab){//regarde si id paser est deja presente
-
-    for (let i = 0; i < tab.length; i++) {
-        if (tab[i] === idBook) {
-            return true;
-        }
-        
-    }
-    return false;
-}*/
+//fontion de recuperation des livre dans le session storage
 function getBooks() {
     return JSON.parse(sessionStorage.getItem("TabBooksSave"));
 }
+//fontion d'ajou de livre dans le sesion storage prend en parametre la liste des livre a sauvegarder
 function setBooks(monSaveBook){
     sessionStorage.setItem("TabBooksSave", JSON.stringify(monSaveBook));
 }
-
+// fontion ajouten un listeneur a chaque icon de sauvegarde
 function addEventSaveBook(){
     
     let classStrok = document.querySelectorAll(".addB");
@@ -310,9 +235,7 @@ function addEventSaveBook(){
             Array.from(classStrok).forEach(element => {
             element.addEventListener('click', function () {
                 let idSave = this.parentNode.querySelector(".idbook").textContent.substr(4);
-                console.log(idSave);
-                let monSaveBook = getBooks();//afinir
-                console.log(monSaveBook);
+                let monSaveBook = getBooks();
                 if (monSaveBook !== "" && monSaveBook !== null) {
                         if (monSaveBook.some((elem => elem === idSave))) {
                             alert("Item déja enregistrer");
@@ -329,19 +252,9 @@ function addEventSaveBook(){
            
     
 }
+// fontion ajouten un listeneur a chaque icon de supresion
 function addEventDeletebook(){
     
-   /* document.querySelector(".delB").addEventListener('click', function () {
-           
-        let idDelete = this.parentNode.querySelector(".idbook").textContent.substr(4);
-        let monSaveBook = getBooks();
-
-        monSaveBook = monSaveBook.filter(item => item !== idDelete);
-        setBooks(monSaveBook);
-        viewMyBook();
-        
- });*/
-//
     let classStrok = document.querySelectorAll(".delB");
              
     Array.from(classStrok).forEach(element => {
@@ -356,80 +269,48 @@ function addEventDeletebook(){
             });
     });
 }
+//fontion qui demande une requete pour chaque id stoker dans un tableau paser en parametre et le debut de l url de la requete
 function TabPromesse(URL,monSaveBook){
     let listebooks=[];
 
     for(let i =0;i<monSaveBook.length;i++){
-        console.log("viewMyBook2");
         listebooks.push(requestGet(URL+monSaveBook[i]+"?key="+ApiK));        
     }
-    console.log("listebooks");
-    console.log(listebooks);
     return listebooks;
 
 }
-function viewMyBook(){// fait l affichage de ce qui est dans le storage
+//fontion qui affiche les livre
+function viewMyBook(){
 
-    console.log("livre view");
-    //faire un clear des element
+
     document.getElementById("content").innerHTML="<h2>Ma poch'liste</h2>";
     let monSaveBook =getBooks();
     console.log(monSaveBook);
     if (monSaveBook !== "" && monSaveBook !== null ) {//si le tableau existe       
         let URL="https://www.googleapis.com/books/v1/volumes/";       
-        console.log("viewMyBook1");
         Promise.all(TabPromesse(URL,monSaveBook)).then((tabpromise) =>{
-            console.log(tabpromise);
             document.getElementById("content").appendChild(displaybook({items: tabpromise},"1")); 
             addEventDeletebook();          
         }).catch((error) =>
         console.error(error)
-       );//verif les doner envoyer
-        /*
-        if (i = (monSaveBook.length-1)) {
-                document.getElementById("content").appendChild(displaybook({items: listebooks},"1"));//voire pour modif l affichage en  2fonction
-            }
-        */ 
-        /*console.log(listebooks[0])
-        console.log({items: listebooks});
-        console.log("montest");*/
-       // document.getElementById("content").appendChild(displaybook({items: listebooks},"1"));//voir comment demander dattendre aven de faire la demande affiche
-       // 
-
-    
-       
-    //metre une variable vrai ou fau dans le display book pour afficher les icon en fonction un case c mieu pour les evol
-    
-
+       );
     
 } 
-   /* newIcon = document.createElement("i");
-    newIcon.setAttribute("class", "fas fa-trash addB");*/
-
-
-//modif location
-
+  
 
 
 }
 
-
+// fontion qui se lance une foi que la page est charger pour inisialiser tout les fontion js et listeneur
 window.onload = function () {
     let SelectorBook = document.querySelector("#myBooks h2");
     htmlAddBook(SelectorBook);
     htmlCancelSearchBt(SelectorBook);
     htmlform(SelectorBook);
     hideBt();
-    //initBooks();
     viewMyBook();
-    console.log("main");
     waitSearch();
-
-    
-    
-   
+  
 }
 
 
-
-console.log("coucou");
