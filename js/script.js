@@ -1,10 +1,10 @@
 //Clef de  l'Api
 const apiK = "AIzaSyA8RaWOM9HDXS0n2e6LOSLM6c6fBgmdM1w";
-//fonction qui permet de metre un element apre un autre 
+//fonction qui permet de mettre un élément après un autre 
 function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
-//crée et place place le bouton pour ajouter un livre (dans une div pour permetre dapliquer le css)
+//crée et place le bouton pour ajouter un livre (dans une div pour permettre d'appliquer le css)
 function htmlAddBook(selectorBook) {
     const newDiv = document.createElement("div");
     newDiv.setAttribute("class", "center");
@@ -51,13 +51,13 @@ function htmlform(selectorBook) {
     newForm.appendChild(newInputAuteur);
     newForm.appendChild(newInputSubmit);
     newForm.style.display = 'none';
-    // crée la div qui acuellera le resulta
+    // crée la div qui acueillera le résultat
     const newResult = document.createElement("div");
     newResult.setAttribute("id", "result-search");
     document.getElementById("myBooks").insertBefore(newResult, document.querySelector("hr"));
 
 }
-//crée le bouton d anulation et le rend invisible 
+//crée le bouton d annulation et le rend invisible 
 function htmlCancelSearchBt(selectorBook) {
 
     const newBtCancelSearch = document.createElement("input");
@@ -68,7 +68,7 @@ function htmlCancelSearchBt(selectorBook) {
     insertAfter(newBtCancelSearch, selectorBook);
     newBtCancelSearch.style.display = 'none';
 }
-//cette fontion crée deux listeneur sur l'apuit des boutons pour masquer et afficher le contenu de la page en fonction de l action utilisateur
+//cette fontion crée deux listener sur l'appui des boutons pour masquer et afficher le contenu de la page en fonction de l'action utilisateur
 function hideBt() {
 
     document.getElementById("bt-add-book").addEventListener('click', function () {
@@ -84,7 +84,7 @@ function hideBt() {
     });
 
 }
-// fait une requete a partir  d'une url et retourne une reponce
+// fait une requête à partir  d'une url et retourne une promesse
 function requestGet(url) {
 
     return fetch(url).then(function (response) {
@@ -92,28 +92,28 @@ function requestGet(url) {
             return response.json();
 
         } else {
-            console.error("Ereur : " + response.status);//retour l ereur si il y a
+            console.error("Ereur : " + response.status);//retourne l'erreur s'il y en a
         }
 
     });
 
 }
-//fonction d'affichage des liste de livre prend en parametre une liste de livre et un type d affichage en fonction si celui ci est une recher ou une liste d enregistrement
+//fonction d'affichage des listes de livres prend en paramètre une liste de livres et un type d'affichage en fonction si celui-ci est une recherche ou une liste d'enregistrements
 function displaybook(requestResult, typeAffichage) {
 
     container = document.createElement("div");
     container.setAttribute("class", "enumbookList");
-    if (requestResult.items === undefined) {//si aucun livre on inser celeument l information
+    if (requestResult.items === undefined) {//si aucun livre on insère seulement l'information
         let newItemNotFound = document.createElement("p");
         newItemNotFound.setAttribute("class", "idNotFound");
         newItemNotFound.innerHTML = "Aucun livre n’a été trouvé";
         container.appendChild(newItemNotFound);
     } else {
 
-        requestResult.items.map(item => {// pacour de la liste de livre
+        requestResult.items.map(item => {// parcours de la liste de livres
             let newItemContainer = document.createElement("div");
             newItemContainer.setAttribute("class", "enumbook");
-            // creation la balise dajou ou supresion du livre en fonction du type
+            // création de la balise d'ajout ou suppression du livre en fonction du type
             switch (typeAffichage) {
                 case "0":
                     newIcon = document.createElement("i");
@@ -129,7 +129,7 @@ function displaybook(requestResult, typeAffichage) {
                     break;
             }
 
-            //creation des diver balise et ajou des contenu associer
+            //création des diverses balises et ajout des contenus associés
             newItemTitle = document.createElement("p");
             newItemTitle.setAttribute("class", "titlebook");
             newItemTitle.innerHTML = "Titre: " + item.volumeInfo && item.volumeInfo.title ? item.volumeInfo.title : '';
@@ -144,17 +144,17 @@ function displaybook(requestResult, typeAffichage) {
 
             newItemDescription = document.createElement("p");
             newItemDescription.setAttribute("class", "descriptionbook");
-            // verification de l existance d'une description
+            // vérification de l'existence d'une description
             if (item["volumeInfo"].imageLinks != undefined) {
                 newItemDescription.innerHTML = "Description: " + item["volumeInfo"].description.substr(0, 200);
             } else {
                 newItemDescription.innerHTML = "Description: Information manquante";
             }
-            // verification de l existance d'une image 
+            // vérification de l'existence d'une image 
             if (item["volumeInfo"].imageLinks != undefined) {
                 newItemImg = document.createElement("img");
                 newItemImg.setAttribute("class", "imgbook");
-                newItemImg.setAttribute("src", item["volumeInfo"].imageLinks.smallThumbnail);// penser a gerer les tail pour le responsive
+                newItemImg.setAttribute("src", item["volumeInfo"].imageLinks.smallThumbnail);
 
             } else {
 
@@ -163,9 +163,9 @@ function displaybook(requestResult, typeAffichage) {
                 newItemImg.setAttribute("src", "./img/unavailable.png");
 
             }
-            let newDivImg = document.createElement("div");//ajout d une div pour centrer l image
+            let newDivImg = document.createElement("div");//ajout d'une div pour centrer l'image
             newDivImg.appendChild(newItemImg);
-            // association des balise a un contenaire principal
+            // association des balises à un container principal
             newItemContainer.appendChild(newIcon);
             newItemContainer.appendChild(newItemTitle);
             newItemContainer.appendChild(newItemId);
@@ -176,9 +176,9 @@ function displaybook(requestResult, typeAffichage) {
             container.appendChild(newItemContainer);
         });
     }
-    return container; //envoi du conteneur
+    return container; //envoi du container
 }
-//fonction de recherche de livre
+//fonction de recherche de livres
 function searchBook(titre, auteur) {
 
     let url = "https://www.googleapis.com/books/v1/volumes?q=";
@@ -197,7 +197,7 @@ function searchBook(titre, auteur) {
     );
 
 }
-//fonction declanchan la recherche des livre si apuit sur le bouton corespondent
+//fonction déclenchant la recherche des livres si appui sur le bouton correspondant
 function waitSearch() {
 
     document.getElementById("bt-search").addEventListener('click', function () {
@@ -211,15 +211,15 @@ function waitSearch() {
     });
 
 }
-//fontion de recuperation des livre dans le session storage
+//fontion de récupération des livres dans le session storage
 function getBooks() {
     return JSON.parse(sessionStorage.getItem("TabBooksSave"));
 }
-//fontion d'ajou de livre dans le sesion storage prend en parametre la liste des livre a sauvegarder
+//fontion d'ajout de livres dans le session storage prend en paramètre la liste des livres à sauvegarder
 function setBooks(monSaveBook) {
     sessionStorage.setItem("TabBooksSave", JSON.stringify(monSaveBook));
 }
-// fontion ajouten un listeneur a chaque icon de sauvegarde
+// fontion ajoutant un listener à chaque icone de sauvegarde
 function addEventSaveBook() {
 
     const classStrok = document.querySelectorAll(".addB");
@@ -242,7 +242,7 @@ function addEventSaveBook() {
         });
     });
 }
-// fontion ajouten un listeneur a chaque icon de supresion
+// fontion ajoutant un listener à chaque icone de suppression
 function addEventDeletebook() {
 
     const classStrok = document.querySelectorAll(".delB");
@@ -259,7 +259,7 @@ function addEventDeletebook() {
         });
     });
 }
-//fontion qui demande une requete pour chaque id stoker dans un tableau paser en parametre et le debut de l url de la requete
+//fontion qui demande une requête pour chaque id stocké dans un tableau passé en paramètre et le début de l'url de la requête
 function TabPromesse(url, monSaveBook) {
 
     let listeBooks = [];
@@ -271,7 +271,7 @@ function TabPromesse(url, monSaveBook) {
     return listeBooks;
 
 }
-//fontion qui affiche les livre
+//fontion qui affiche les livres
 function viewMyBook() {
 
     document.getElementById("content").innerHTML = "<h2>Ma poch'liste</h2>";
@@ -291,7 +291,7 @@ function viewMyBook() {
 
 }
 
-// fontion qui se lance une foi que la page est charger pour inisialiser tout les fontion js et listeneur
+// fontion qui se lance une fois que la page est chargée pour initialiser toutes les fonctions js et listener
 window.onload = function () {
 
     const selectorBook = document.querySelector("#myBooks h2");

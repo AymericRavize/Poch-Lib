@@ -1,20 +1,20 @@
 Poch’Lib 
 
-->Intalation
+->Installation
 
- Ouvrer le fixhier Index.html dans votre navigateur favori
+ Ouvrez le fichier Index.html dans votre navigateur favori
 
 ->Utilisation
 
- Pour ajouter un livre il vous suffi de cliquer sur  "ajouter un livre" puitde saisir 
- les information demander dans les champ corespondent  puit decliquer sur rechercher.
+ Pour ajouter un livre il vous suffit de cliquer sur  "ajouter un livre" puis de saisir 
+ les informations demandées dans les champs correspondants puis de cliquer sur rechercher.
 
- Une foi la liste de livre obtenu vous pouver ajouter un livre en clican sur l'icon a 
+ Une fois la liste de livres obtenue vous pouvez ajouter un livre en cliquant sur l'icone à 
  droite disponible pour chaque livre.
 
- Une foi cela fait vous pouvez consulter a tout moment la fiche du livre dans la parti 
- ma poch'liste temps que votre section reste active.
+ Une fois cela fait vous pouvez consulter à tout moment la fiche du livre dans la partie 
+ ma poch'liste tant que votre section reste active.
 
- Pour la supresion cela ce passe de la meme manière a ceci pre que l icon change en une
- corbeille est sera dispoible dans la parti Ma poch'liste.
+ Pour la suppression cela se passe de la même manière à ceci près que l'icone change en une
+ corbeille et sera disponible dans la partie Ma poch'liste.
 
