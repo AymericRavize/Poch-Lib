@@ -4,13 +4,15 @@ function insertAfter(newNode, referenceNode) {
 }
 
 function htmlAddBook(SelectorBook){
-    
+    const newDiv = document.createElement("div");
+    newDiv.setAttribute("class", "center");
     const newBtAddBook = document.createElement("input");
     newBtAddBook.setAttribute("type", "button");
     newBtAddBook.setAttribute("value", "Ajouter un livre");
     newBtAddBook.setAttribute("class", "button");
-    newBtAddBook.setAttribute("id", "bt-add-book");  
-    insertAfter(newBtAddBook,SelectorBook);
+    newBtAddBook.setAttribute("id", "bt-add-book");
+    newDiv.appendChild(newBtAddBook);
+    insertAfter(newDiv,SelectorBook);
 }
 
 function htmlform(SelectorBook){
@@ -68,7 +70,7 @@ function htmlCancelSearchBt(SelectorBook){
 function hideBt(){
 
     document.getElementById("bt-add-book").addEventListener('click', function () {
-        document.getElementById("form-search").style.display = 'inline-block';
+        document.getElementById("form-search").style.display = 'flex';
         document.getElementById("bt-cancel-search").style.display = 'inline-block'; 
         document.getElementById("bt-add-book").style.display = 'none';    
     });
@@ -215,15 +217,17 @@ console.log(requestresult.items);
             newItemimg = document.createElement("img");
             newItemimg.setAttribute("class", "imgbook");
             newItemimg.setAttribute("src", "./img/unavailable.png"); 
-
+           
         }
-        
+        let newDivimg = document.createElement("div");
+        newDivimg.appendChild(newItemimg);
+
         newItemcontainer.appendChild(newIcon);
         newItemcontainer.appendChild(newItemtitle);
         newItemcontainer.appendChild(newItemid);
         newItemcontainer.appendChild(newItemauthor);
         newItemcontainer.appendChild(newItemdescription);
-        newItemcontainer.appendChild(newItemimg);
+        newItemcontainer.appendChild(newDivimg);
 //modif location
         container.appendChild(newItemcontainer);
         console.log(newItemcontainer);
